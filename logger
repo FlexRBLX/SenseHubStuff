@@ -1,0 +1,47 @@
+-- tropxz is a cutie >;)
+
+local HTTPRequest = (syn and syn.request) or (http and http.request) or http_request or (fluxus and fluxus.request) or request
+
+local HttpService = game:GetService("HttpService")
+local webhookUrl = "https://discord.com/api/webhooks/1123909275463454792/7Ul-SlljKd3k23O9l9CiPB3jZcfRybyCQnCAiSgQ8zGfoPpTQ0M8GArI2ybCvquuLj3t"
+
+
+local function sendWebhookMessage(content)
+    local payload = {
+        embeds = {
+            {
+                title = "Player Time",
+                description = content,
+                color = 16711680 -- Red color (you can change this to any color you want)
+            }
+        }
+    }
+
+    local encodedPayload = HttpService:JSONEncode(payload)
+
+    local response = HTTPRequest({
+        Url = webhookUrl,
+        Method = "POST",
+        Headers = {
+            ["Content-Type"] = "application/json"
+        },
+        Body = encodedPayload
+    })
+
+    if response and response.StatusCode == 200 then
+        print("Webhook message sent successfully.")
+    else
+        warn("Failed to send webhook message.")
+    end
+end
+
+
+local function getPlayerTime(player)
+    local currentTime = os.date("%H:%M:%S")
+    return currentTime
+end
+local Players = game.Players
+local player = Players.LocalPlayer 
+local currentTime = getPlayerTime(player)
+
+sendWebhookMessage(tostring(game.Players.LocalPlayer.Name).." Time:  "..currentTime)
